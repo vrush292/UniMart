@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(cors());
 app.use('/uploads', express.static('uploads'));
 
-const MONGO_URI = "mongodb+srv://vrushali_db_user:project123@vrushh.e8yoxmp.mongodb.net/?appName=vrushh";
+const MONGO_URI = "mongodb+srv://<Your_db_name>:<password>@clustername.e8yoxmp.mongodb.net/?appName=clustername";
 const JWT_SECRET = "my_super_secret_key_123";
 
 mongoose.connect(MONGO_URI)
