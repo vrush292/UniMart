@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>UniMart - Campus OLX</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav>
+    <div class="logo"><i class="fas fa-university"></i> UniMart</div>
+    <div class="nav-links">
+        <button onclick="showPage('home')">Browse</button>
+        
+        <button onclick="showPage('sell')" class="btn-highlight">+ Sell Item</button>
+        
+        <button onclick="showPage('auth')" id="nav-login-btn">Login</button>
+
+        <button onclick="showPage('profile')" id="nav-profile-btn" class="hidden">
+            <i class="fas fa-user-circle" style="font-size:1.2rem;"></i>
+        </button>
+    </div>
+</nav>
+
+    <div id="auth-page" class="container hidden">
+        <div class="form-wrapper">
+            <h2 id="auth-title">Login to UniMart</h2>
+            <form id="auth-form">
+                
+                <input type="text" id="auth-username" placeholder="Username" required>
+
+                <div class="register-only hidden">
+                    <label style="font-size:0.8rem; font-weight:bold; color:#666;">Institute</label>
+                    <input type="text" value="Veermata Jijabai Technological Institute (VJTI)" disabled style="background:#e9ecef; cursor:not-allowed;">
+                    
+                    <input type="tel" id="auth-mobile" placeholder="Mobile Number (For Buyers to Contact)" maxlength="10">
+
+                    <select id="auth-branch">
+                        <option value="" disabled selected>Select Your Branch</option>
+                        <optgroup label="Masters">
+                            <option value="MCA">Master of Computer Applications (MCA)</option>
+                            <option value="MTech - Computer">M.Tech - Computer Engineering</option>
+                            <option value="MTech - Software">M.Tech - Software Engineering</option>
+                            <option value="MTech - Electronics">M.Tech - Electronics & Telecom</option>
+                            <option value="MTech - Civil">M.Tech - Civil (Construction)</option>
+                            <option value="MTech - Structural">M.Tech - Structural Engineering</option>
+                            <option value="MTech - Mechanical">M.Tech - Mechanical</option>
+                            <option value="MTech - Production">M.Tech - Production</option>
+                        </optgroup>
+                        <optgroup label="Bachelors (B.Tech)">
+                            <option value="Computer Engineering">Computer Engineering</option>
+                            <option value="IT">Information Technology</option>
+                            <option value="EXTC">EXTC</option>
+                            <option value="Electronics">Electronics</option>
+                            <option value="Electrical">Electrical</option>
+                            <option value="Mechanical">Mechanical</option>
+                            <option value="Civil">Civil</option>
+                            <option value="Textile">Textile</option>
+                            <option value="Production">Production</option>
+                        </optgroup>
+                    </select>
+                </div>
+
+                <input type="password" id="auth-password" placeholder="Password" required>
+                <input type="password" id="auth-confirm-pass" class="register-only hidden" placeholder="Confirm Password">
+
+                <button type="submit">Submit</button>
+            </form>
+
+            <p style="margin-top:15px; text-align:center;">
+                <span id="toggle-text">New here? </span>
+                <a href="#" onclick="toggleAuthMode()" id="auth-action-link" style="color:#6C63FF; font-weight:bold;">Create Account</a>
+            </p>
+        </div>
+    </div>
+
+    <div id="home-page" class="container">
+        <div class="filter-container">
+            <div class="search-wrapper">
+                <i class="fas fa-search"></i>
+                <input type="text" id="search-input" placeholder="Search for books, instruments..." onkeyup="fetchProducts()">
+            </div>
+            <select id="category-filter" onchange="fetchProducts()">
+                <option value="All">All Categories</option>
+                <option value="Books">Books</option>
+                <option value="Electronics">Electronics</option>
+                <option value="Stationery">Stationery</option>
+                <option value="Tools">Tools</option>
+            </select>
+        </div>
+
+        <div id="product-grid" class="grid">
+            </div>
+    </div>
+
+    <div id="sell-page" class="container hidden">
+        <div class="form-wrapper">
+            <h2>Sell an Item</h2>
+            <form id="sell-form">
+                <input type="text" id="name" placeholder="Item Name (e.g. Graphics Book)" required>
+                <input type="number" id="price" placeholder="Price (₹)" required>
+                <select id="category" required>
+                    <option value="Books">Books</option>
+                    <option value="Electronics">Electronics</option>
+                    <option value="Stationery">Stationery</option>
+                    <option value="Tools">Tools</option>
+                </select>
+                <textarea id="description" placeholder="Short description..." required></textarea>
+                
+                <label>Upload Image</label>
+                <input type="file" id="image-file" accept="image/*" required>                
+                
+                <button type="submit">Post Ad</button>
+                <button type="button" class="btn-cancel" onclick="showPage('home')">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="profile-page" class="container hidden">
+        <div class="profile-header">
+            <div class="profile-info">
+                <h2 id="profile-name">Student Name</h2>
+                <p id="profile-details" style="color:#666;">VJTI • Branch</p>
+                
+                <div style="margin-top: 10px; display: flex; gap: 10px;">
+                    <button onclick="openProfileModal()" class="btn-secondary" style="background-color: #4CAF50; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer;">
+                        <i class="fas fa-user-edit"></i> Edit Profile
+                    </button>
+                    <button onclick="logout()" class="btn-logout">Logout</button>
+                </div>
+            </div>
+
+            <div class="profile-stats">
+                <div class="stat-box">
+                    <h3 id="stat-active">0</h3>
+                    <p>Active Ads</p>
+                </div>
+                <div class="stat-box">
+                    <h3 id="stat-sold">0</h3>
+                    <p>Items Sold</p>
+                </div>
+            </div>
+        </div>
+
+        <h3>My Active Listings</h3>
+        <div id="my-ads-grid" class="grid"></div>
+
+        <h3 style="margin-top:40px; color:#666;">Sold History</h3>
+        <div id="sold-history-list"></div>
+    </div>
+
+    <div id="product-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeProductDetails()">&times;</span>
+            
+            <div class="modal-body">
+                <div class="modal-image">
+                    <img id="modal-img" src="" alt="Product Image">
+                </div>
+
+                <div class="modal-info">
+                    <h2 id="modal-title">Product Name</h2>
+                    <p class="modal-price" id="modal-price">₹0</p>
+                    <span class="category" id="modal-category">Category</span>
+                    
+                    <div class="seller-info">
+                        <p><strong>Seller:</strong> <span id="modal-seller">Name</span></p>
+                        <p class="desc-label">Description:</p>
+                        <p id="modal-desc" class="full-description">...</p>
+                    </div>
+
+                    <button id="modal-chat-btn" class="btn-whatsapp full-width">
+                        <i class="fab fa-whatsapp"></i> Chat with Seller
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="edit-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 500px;">
+            <span class="close-btn" onclick="closeEditModal()">&times;</span>
+            <h2>Edit Item</h2>
+            
+            <form id="edit-form">
+                <input type="hidden" id="edit-id"> 
+                <div class="form-group">
+                    <label>Item Name</label>
+                    <input type="text" id="edit-name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Price (₹)</label>
+                    <input type="number" id="edit-price" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="edit-desc" rows="4" required></textarea>
+                </div>
+                
+                <button type="submit" class="btn-primary full-width">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="profile-modal" class="modal hidden">
+        <div class="modal-content" style="max-width: 400px;">
+            <span class="close-btn" onclick="closeProfileModal()">&times;</span>
+            <h2>Update Profile</h2>
+            <form id="profile-form">
+                <div class="form-group">
+                    <label>Branch</label>
+                    <select id="edit-profile-branch" required>
+                        <optgroup label="Masters">
+                            <option value="MCA">MCA</option>
+                            <option value="MTech - Computer">M.Tech - Computer</option>
+                            <option value="MTech - Software">M.Tech - Software</option>
+                            <option value="MTech - Electronics">M.Tech - Electronics</option>
+                            <option value="MTech - Civil">M.Tech - Civil</option>
+                            <option value="MTech - Structural">M.Tech - Structural</option>
+                            <option value="MTech - Mechanical">M.Tech - Mechanical</option>
+                            <option value="MTech - Production">M.Tech - Production</option>
+                        </optgroup>
+                        <optgroup label="Bachelors (B.Tech)">
+                            <option value="Computer Engineering">Computer Engineering</option>
+                            <option value="IT">Information Technology</option>
+                            <option value="EXTC">EXTC</option>
+                            <option value="Electronics">Electronics</option>
+                            <option value="Electrical">Electrical</option>
+                            <option value="Mechanical">Mechanical</option>
+                            <option value="Civil">Civil</option>
+                            <option value="Textile">Textile</option>
+                            <option value="Production">Production</option>
+                        </optgroup>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Mobile Number</label>
+                    <input type="tel" id="edit-profile-mobile" pattern="[0-9]{10}" required placeholder="Update your number">
+                </div>
+                <button type="submit" class="btn-primary full-width">Save details</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
